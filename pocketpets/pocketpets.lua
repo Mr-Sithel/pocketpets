@@ -1,7 +1,7 @@
 addon.name      = 'pocketpets';
 addon.author    = 'Sithel';
 addon.version   = '1.0.0';
-addon.desc      = 'Automatically resizes all active pets (SMN, BST, PUP, DRG) in view.';
+addon.desc      = 'Resizes all active pets (SMN, BST, PUP, DRG) in view.';
 
 require('common');
 local chat = require('chat');
