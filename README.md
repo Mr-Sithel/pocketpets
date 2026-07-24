@@ -1,0 +1,49 @@
+### PocketPets
+
+* Inspired by the addon [BigMode](https://github.com/JayTDawgzone/bigmode)
+
+- Resize all players pets with 1 command.
+
+### Overview
+
+Displays all player pets to any size (0.5-2.0) 
+
+Pets include SMN Avatars, PUP,DRG, and BST jug/charmed pets.
+
+* Commands: /pp or /pocketpets
+  - /pp                - Toggles automatic pet resizing on/off.
+  - /pp help           - Lists available commands below.
+  - /pp s|size (value) - Adjusts all pet sizes (e.g., 0.5 to 2.0)
+  - /pp st|status      - Shows active status and current size scale.
+  - /pp h|hide         - Hide all pets (ModelSize = 0)
+  - /pp r|reset        - Resets all active pets to default size (1.0)
+
+### Added
+
+- Added: Settings config
+- Added: shortcut commands (Ex. /pp s or /pp size does the same)
+
+### Changes
+
+- Pet sizes can only be changed to .5, 1, 1.5, 2 (Anything else would cause pets to flicker)
+
+### Known Issues
+- None as of yet
+
+---
+
+### Screenshot
+
+![pp](https://github.com/Mr-Sithel/pocketpets/blob/main/Example.png?raw=true)
+
+### Installation
+
+* Download and unzip the correct version of PocketPets at https://github.com/Mr-Sithel/pocketpets/releases/
+* Copy the `pocketpets` folder from inside of the `pocketpets-main` folder into your Ashita addons directory
+* Addon directory is : `HorizonXI\Game\addons`
+* This was created for `Ashita (Interface v4.30)`, but `Ashita (Interface v4.16)` should still work which Horizon uses.
+* You can load the addon by typing `/load addon pocketpets`.  It is recommended you add this line to the appropriate place in `scripts/default.txt` to auto load.
+
+#### Credit
+
+Sithel
