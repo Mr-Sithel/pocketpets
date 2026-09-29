@@ -1,15 +1,12 @@
 addon.name      = 'pocketpets';
 addon.author    = 'Sithel';
-addon.version   = '1.0.0';
+addon.version   = '1.0.1';
 addon.desc      = 'Resizes all active pets (SMN, BST, PUP, DRG) in view.';
 
 require('common');
 local chat = require('chat');
 local settings = require('settings');
 
-----------------------------------------------------------------------------------------------------
--- Default Configuration
-----------------------------------------------------------------------------------------------------
 local default_settings = T{
     enabled     = true,
     hidePets    = false,
@@ -20,9 +17,10 @@ local default_settings = T{
 local user_settings = settings.load(default_settings);
 local last_update   = 0;
 
-----------------------------------------------------------------------------------------------------
+-- Track pet entity slots so released pets can be reset to normal size.
+local previous_pets = {};
+
 -- Settings Logic
-----------------------------------------------------------------------------------------------------
 local function SaveSettings()
     settings.save();
 end
@@ -31,9 +29,7 @@ settings.register('settings', 'settings_update', function(new_settings)
     user_settings = new_settings;
 end)
 
-----------------------------------------------------------------------------------------------------
 -- Pet Detection
-----------------------------------------------------------------------------------------------------
 local function is_pet(entity)
     if (entity == nil or entity.Name == nil) then 
         return false; 
@@ -49,9 +45,7 @@ local function is_pet(entity)
     return false;
 end
 
-----------------------------------------------------------------------------------------------------
 -- Reset All Pet Sizes
-----------------------------------------------------------------------------------------------------
 local function reset_pet_sizes()
     for i = 0, 2303 do
         local entity = GetEntity(i);
@@ -62,9 +56,7 @@ local function reset_pet_sizes()
     end
 end
 
-----------------------------------------------------------------------------------------------------
 -- Main Resize Loop
-----------------------------------------------------------------------------------------------------
 ashita.events.register('d3d_present', 'present_cb', function()
     if not user_settings.enabled then
         return;
@@ -76,9 +68,13 @@ ashita.events.register('d3d_present', 'present_cb', function()
     end
     last_update = now;
 
+    local current_pets = {};
+
     for i = 0, 2303 do
         local entity = GetEntity(i);
+
         if entity and is_pet(entity) then
+            current_pets[i] = true;
 
             if user_settings.hidePets then
                 -- Hide pets
@@ -96,21 +92,30 @@ ashita.events.register('d3d_present', 'present_cb', function()
 
         end
     end
+
+    -- A pet that was present during the previous update may have been
+    -- released or disappeared. Reset that entity slot back to normal.
+    for i, _ in pairs(previous_pets) do
+        if not current_pets[i] then
+            local entity = GetEntity(i);
+            if entity then
+                entity.ModelSize = 1.0;
+                entity.ModelUpdateFlags = 0x10;
+            end
+        end
+    end
+
+    previous_pets = current_pets;
 end)
 
-----------------------------------------------------------------------------------------------------
 -- Commands
-----------------------------------------------------------------------------------------------------
 ashita.events.register('command', 'command_cb', function(e)
     local args = e.command:lower():args();
     if #args == 0 then return end;
 
     if table.contains({'/pocketpets', '/pp'}, args[1]) then
         e.blocked = true;
-
-        ----------------------------------------------------------------------
         -- Toggle
-        ----------------------------------------------------------------------
         if #args == 1 then
             user_settings.enabled = not user_settings.enabled;
             SaveSettings();
@@ -124,9 +129,7 @@ ashita.events.register('command', 'command_cb', function(e)
             return;
         end
 
-        ----------------------------------------------------------------------
         -- Size
-        ----------------------------------------------------------------------
         if table.contains({'size','s'}, args[2]) then
             local newSize = tonumber(args[3]);
         
@@ -157,9 +160,7 @@ ashita.events.register('command', 'command_cb', function(e)
             return;
         end
 
-        ----------------------------------------------------------------------
         -- Status
-        ----------------------------------------------------------------------
         if table.contains({'status','st'}, args[2]) then
             local status = user_settings.enabled and chat.success('Enabled') or chat.error('Disabled');
             local size   = chat.success(tostring(user_settings.targetSize));
@@ -179,9 +180,7 @@ ashita.events.register('command', 'command_cb', function(e)
             return;
         end
 
-        ----------------------------------------------------------------------
         -- Hide Pets
-        ----------------------------------------------------------------------
         if table.contains({'hide','h'}, args[2]) then
             user_settings.hidePets = not user_settings.hidePets;
             SaveSettings();
@@ -195,9 +194,7 @@ ashita.events.register('command', 'command_cb', function(e)
             return;
         end
 
-        ----------------------------------------------------------------------
         -- Reset
-        ----------------------------------------------------------------------
         if table.contains({'reset','r'}, args[2]) then
             user_settings.targetSize = 1.0;
             SaveSettings();
@@ -206,9 +203,7 @@ ashita.events.register('command', 'command_cb', function(e)
             return;
         end
 
-        ----------------------------------------------------------------------
         -- Help
-        ----------------------------------------------------------------------
         print(chat.header(addon.name):append(chat.message('\31\207Commands:')));
         print('\31\207 /pp                \31\8 - Toggle automatic pet resizing.');
         print('\31\207 /pp s|size <value> \31\8 - Set pet size (0.5 to 2.0).');
@@ -219,9 +214,6 @@ ashita.events.register('command', 'command_cb', function(e)
     end
 end)
 
-----------------------------------------------------------------------------------------------------
--- Unload
-----------------------------------------------------------------------------------------------------
 ashita.events.register('unload', 'unload_cb', function()
     reset_pet_sizes();
 end)
