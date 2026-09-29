@@ -4,6 +4,13 @@
 
 - Resize all players pets with 1 command.
 
+### Private Server Approval
+
+| Server | Status | Date |
+| :--- | :--- | :--- |
+| **HorizonXI** | ${\textsf{\color{orange}{Pending}}}$ | -- |
+| **PhoenixXI** | ${\textsf{\color{orange}{Pending}}}$ | -- |
+
 ### Overview
 
 Displays all player pets to any size (0.5-2.0) 
@@ -28,7 +35,7 @@ Pets include SMN Avatars, PUP,DRG, and BST jug/charmed pets.
 - Pet sizes can only be changed to .5, 1, 1.5, 2 (Anything else would cause pets to flicker)
 
 ### Known Issues
-- None as of yet
+- Possible issue when multiple entities in zone causing random mobs to resize.
 
 ---
 
@@ -39,9 +46,9 @@ Pets include SMN Avatars, PUP,DRG, and BST jug/charmed pets.
 ### Installation
 
 * Download and unzip the correct version of PocketPets at https://github.com/Mr-Sithel/pocketpets/releases/
-* Copy the `pocketpets` folder from inside of the `pocketpets-main` folder into your Ashita addons directory
-* Addon directory is : `HorizonXI\Game\addons`
-* This was created for `Ashita (Interface v4.30)`, but `Ashita (Interface v4.16)` should still work which Horizon uses.
+* Copy the `pocketpets` folder from inside of the `PocketPets-(X.X.X)` folder into your Ashita addons directory
+* Addon example directory : `HorizonXI\Game\addons` or `PhoenixXI\addons`
+* This was created for `Ashita (Interface v4.30)`
 * You can load the addon by typing `/load addon pocketpets`.  It is recommended you add this line to the appropriate place in `scripts/default.txt` to auto load.
 
 #### Credit
